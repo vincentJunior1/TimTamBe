@@ -2,6 +2,7 @@ const helper = require('../helper/response')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
+const randomTokens = require('random-token')
 const {
   registerUserModel,
   cekEmailModel,
@@ -32,12 +33,11 @@ module.exports = {
             'Password Length Atleast Have 8 Character'
           )
         } else {
-          const salt = bcrypt.genSaltSync(1)
+          const salt = bcrypt.genSaltSync(10)
           const encryptPassword = bcrypt.hashSync(user_password, salt)
-          const randomToken = 'sky' + Math.floor(Math.random() * 9999)
-          const userCode = bcrypt.hashSync(randomToken, salt)
+          const randomToken = randomTokens(16)
           const setData = {
-            user_code: userCode,
+            user_code: randomToken,
             user_name,
             user_email,
             user_password: encryptPassword,
@@ -62,7 +62,7 @@ module.exports = {
             from: '"Sky Router Confirmation Email" <skyrouterweb6@gmail.com>', // sender address
             to: user_email, // list of receivers
             subject: 'Confirmation Email', // Subject line
-            html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${userCode}</a>` // html body
+            html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${randomToken}</a>` // html body
           })
           const result = await registerUserModel(setData)
           return helper.response(res, 200, 'Success Register Data', result)
@@ -205,6 +205,84 @@ module.exports = {
     } catch (error) {
       console.log(error)
       return helper.response(res, 400, "Can't Update profile", error)
+    }
+  },
+  getLinkForgetPassword: async (req, res) => {
+    try {
+      const { user_email } = req.body
+      const cekEmail = await cekEmailModel(user_email)
+      if (cekEmail.length > 0) {
+        const randomToken = randomTokens(16)
+        const setData = {
+          ...cekEmail[0],
+          ...{ user_code: randomToken }
+        }
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.google.com',
+          service: 'gmail',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: 'skyrouterweb6@gmail.com', // generated ethereal user
+            pass: 'skyrouter6' // generated ethereal password
+          }
+        })
+        await transporter.sendMail({
+          from: '"Sky Router Reset Password" <skyrouterweb6@gmail.com>', // sender address
+          to: user_email, // list of receivers
+          subject: 'Confirmation Email', // Subject line
+          html: `Click Here To Change Your Password <a>http://localhost:3000/user/forgetpassword/${randomToken}</a>` // html body
+        })
+        await patchUserModel(setData, cekEmail[0].user_id)
+        return helper.response(
+          res,
+          200,
+          'Success Send Link Forget Password To Your Email'
+        )
+      } else {
+        return helper.response(res, 404, 'User Not Found')
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Something Wrong Please Try Again')
+    }
+  },
+  forgetPassword: async (req, res) => {
+    try {
+      const { id } = req.params
+      const { user_password } = req.body
+      const cekCodes = await cekCode(id)
+      if (cekCodes.length > 0) {
+        if (user_password === '' || user_password === undefined) {
+          return helper.response(res, 400, "Password Can't Be Empty")
+        } else {
+          if (user_password.length <= 7) {
+            return helper.response(
+              res,
+              400,
+              'Password Atleast Have 8 Characters'
+            )
+          } else {
+            const salt = bcrypt.genSaltSync(10)
+            const encryptPassword = bcrypt.hashSync(user_password, salt)
+            const setData = {
+              ...cekCodes[0],
+              ...{ user_password: encryptPassword }
+            }
+            const resetPassword = await patchUserModel(
+              setData,
+              cekCodes[0].user_id
+            )
+            return helper.response(
+              res,
+              200,
+              'Sucess Reset Password',
+              resetPassword
+            )
+          }
+        }
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Something wrong please try again')
     }
   }
 }
