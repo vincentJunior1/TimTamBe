@@ -18,5 +18,13 @@ module.exports = {
         }
       })
     }
+  },
+  isAdmin: (req, res, next) => {
+    const { user_role } = req.decodeToken
+    if (user_role === 0) {
+      return helper.response(res, 400, 'Only Admin Can Access This Method')
+    } else {
+      next()
+    }
   }
 }
