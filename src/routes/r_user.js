@@ -5,7 +5,8 @@ const {
   verifyUser,
   patchUser,
   getLinkForgetPassword,
-  forgetPassword
+  forgetPassword,
+  changePassword
 } = require('../controller/c_user')
 const uploadFilter = require('../middleware/multerProfile')
 const { authorization } = require('../middleware/Auth')
@@ -16,5 +17,6 @@ router.patch('/verification/:id', verifyUser)
 router.patch('/updateuser/', authorization, uploadFilter, patchUser)
 router.post('/forgetpassword/', getLinkForgetPassword)
 router.patch('/forgetpassword/:id', forgetPassword)
+router.patch('/changepassword', authorization, changePassword)
 
 module.exports = router

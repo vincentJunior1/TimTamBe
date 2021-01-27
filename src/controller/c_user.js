@@ -26,50 +26,54 @@ module.exports = {
       if (user_name === '' || user_password === '' || user_email === '') {
         return helper.response(res, 400, 'Please Field every Field')
       } else {
-        if (user_password.length <= 7) {
-          return helper.response(
-            res,
-            400,
-            'Password Length Atleast Have 8 Character'
-          )
-        } else {
-          const salt = bcrypt.genSaltSync(10)
-          const encryptPassword = bcrypt.hashSync(user_password, salt)
-          const randomToken = randomTokens(16)
-          const setData = {
-            user_code: randomToken,
-            user_name,
-            user_email,
-            user_password: encryptPassword,
-            user_role,
-            user_phone,
-            user_address,
-            user_city,
-            user_post_code,
-            user_status: 0
-          }
-          const transporter = nodemailer.createTransport({
-            host: 'smtp.google.com',
-            service: 'gmail',
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-              user: 'skyrouterweb6@gmail.com', // generated ethereal user
-              pass: 'skyrouter6' // generated ethereal password
+        const cekEmail = await cekEmailModel(user_email)
+        if (cekEmail.length <= 0) {
+          if (user_password.length <= 7) {
+            return helper.response(
+              res,
+              400,
+              'Password Length Atleast Have 8 Character'
+            )
+          } else {
+            const salt = bcrypt.genSaltSync(10)
+            const encryptPassword = bcrypt.hashSync(user_password, salt)
+            const randomToken = randomTokens(16)
+            const setData = {
+              user_code: randomToken,
+              user_name,
+              user_email,
+              user_password: encryptPassword,
+              user_role,
+              user_phone,
+              user_address,
+              user_city,
+              user_post_code,
+              user_status: 0
             }
-          })
-          await transporter.sendMail({
-            from: '"Sky Router Confirmation Email" <skyrouterweb6@gmail.com>', // sender address
-            to: user_email, // list of receivers
-            subject: 'Confirmation Email', // Subject line
-            html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${randomToken}</a>` // html body
-          })
-          const result = await registerUserModel(setData)
-          return helper.response(res, 200, 'Success Register Data', result)
+            const transporter = nodemailer.createTransport({
+              host: 'smtp.google.com',
+              service: 'gmail',
+              port: 587,
+              secure: false, // true for 465, false for other ports
+              auth: {
+                user: 'skyrouterweb6@gmail.com', // generated ethereal user
+                pass: 'skyrouter6' // generated ethereal password
+              }
+            })
+            await transporter.sendMail({
+              from: '"Sky Router Confirmation Email" <skyrouterweb6@gmail.com>', // sender address
+              to: user_email, // list of receivers
+              subject: 'Confirmation Email', // Subject line
+              html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${randomToken}</a>` // html body
+            })
+            const result = await registerUserModel(setData)
+            return helper.response(res, 200, 'Success Register Data', result)
+          }
+        } else {
+          return helper.response(res, 400, 'Email Already Registred')
         }
       }
     } catch (error) {
-      console.log(error)
       return helper.response(res, 400, 'Something error', error)
     }
   },
@@ -283,6 +287,41 @@ module.exports = {
       }
     } catch (error) {
       return helper.response(res, 400, 'Something wrong please try again')
+    }
+  },
+  changePassword: async (req, res) => {
+    try {
+      const { user_id, user_email } = req.decodeToken
+      const { user_password, newPassword } = req.body
+      const cekEmail = await cekEmailModel(user_email)
+      const password = bcrypt.compareSync(
+        user_password,
+        cekEmail[0].user_password
+      )
+      if (password) {
+        if (cekEmail.length > 0) {
+          const salt = bcrypt.genSaltSync(10)
+          const encryptPassword = bcrypt.hashSync(newPassword, salt)
+          const newData = {
+            ...cekEmail[0],
+            ...{ user_password: encryptPassword }
+          }
+          const result = await patchUserModel(newData, user_id)
+          return helper.response(res, 200, 'Sucess Change Password', result)
+        } else {
+          return helper.response(res, 404, 'User Not Found')
+        }
+      } else {
+        return helper.response(res, 400, 'Old Password is wrong')
+      }
+    } catch (error) {
+      console.log(error)
+      return helper.response(
+        res,
+        400,
+        "Can't Change Password Please Try Again",
+        error
+      )
     }
   }
 }
