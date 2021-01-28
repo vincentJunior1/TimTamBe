@@ -19,7 +19,8 @@ module.exports = {
         departureStart,
         departureEnd,
         arrivedStart,
-        arrivedEnd
+        arrivedEnd,
+        sort
       } = req.body
       page = parseInt(page)
       limit = parseInt(limit)
@@ -73,6 +74,7 @@ module.exports = {
         arrivedStart,
         arrivedEnd
       )
+      console.log(sort)
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
       console.log(error)
