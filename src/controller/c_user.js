@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const randomTokens = require('random-token')
+const dotenv = require('dotenv')
+dotenv.config()
 const {
   registerUserModel,
   cekEmailModel,
@@ -55,8 +57,8 @@ module.exports = {
               port: 587,
               secure: false, // true for 465, false for other ports
               auth: {
-                user: 'skyrouterweb6@gmail.com', // generated ethereal user
-                pass: 'skyrouter6' // generated ethereal password
+                user: process.env.EMAIL, // generated ethereal user
+                pass: process.env.PASS // generated ethereal password
               }
             })
             const info = await transporter.sendMail({
@@ -215,36 +217,40 @@ module.exports = {
     try {
       const { user_email } = req.body
       const cekEmail = await cekEmailModel(user_email)
-      if (cekEmail.length > 0) {
-        const randomToken = randomTokens(16)
-        const setData = {
-          ...cekEmail[0],
-          ...{ user_code: randomToken }
-        }
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.google.com',
-          service: 'gmail',
-          port: 587,
-          secure: false, // true for 465, false for other ports
-          auth: {
-            user: 'skyrouterweb6@gmail.com', // generated ethereal user
-            pass: 'skyrouter6' // generated ethereal password
+      if (cekEmail[0].user_status === 1) {
+        if (cekEmail.length > 0) {
+          const randomToken = randomTokens(16)
+          const setData = {
+            ...cekEmail[0],
+            ...{ user_code: randomToken }
           }
-        })
-        await transporter.sendMail({
-          from: '"Sky Router Reset Password" <skyrouterweb6@gmail.com>', // sender address
-          to: user_email, // list of receivers
-          subject: 'Confirmation Email', // Subject line
-          html: `Click Here To Change Your Password <a>http://localhost:3000/user/forgetpassword/${randomToken}</a>` // html body
-        })
-        await patchUserModel(setData, cekEmail[0].user_id)
-        return helper.response(
-          res,
-          200,
-          'Success Send Link Forget Password To Your Email'
-        )
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.google.com',
+            service: 'gmail',
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: 'skyrouterweb6@gmail.com', // generated ethereal user
+              pass: 'skyrouter6' // generated ethereal password
+            }
+          })
+          await transporter.sendMail({
+            from: '"Sky Router Reset Password" <skyrouterweb6@gmail.com>', // sender address
+            to: user_email, // list of receivers
+            subject: 'Confirmation Email', // Subject line
+            html: `Click Here To Change Your Password <a>http://localhost:3000/user/forgetpassword/${randomToken}</a>` // html body
+          })
+          await patchUserModel(setData, cekEmail[0].user_id)
+          return helper.response(
+            res,
+            200,
+            'Success Send Link Forget Password To Your Email'
+          )
+        } else {
+          return helper.response(res, 404, 'User Not Found')
+        }
       } else {
-        return helper.response(res, 404, 'User Not Found')
+        return helper.response(res, 400, 'Please Activate Your Email First')
       }
     } catch (error) {
       return helper.response(res, 400, 'Something Wrong Please Try Again')
