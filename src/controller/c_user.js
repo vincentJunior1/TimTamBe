@@ -15,16 +15,7 @@ const fs = require('fs')
 module.exports = {
   registerUser: async (req, res) => {
     try {
-      const {
-        user_name,
-        user_email,
-        user_password,
-        user_role,
-        user_phone,
-        user_address,
-        user_city,
-        user_post_code
-      } = req.body
+      const { user_name, user_email, user_password, user_role } = req.body
       if (user_name === '' || user_password === '' || user_email === '') {
         return helper.response(res, 400, 'Please Field every Field')
       } else {
@@ -46,28 +37,32 @@ module.exports = {
               user_email,
               user_password: encryptPassword,
               user_role,
-              user_phone,
-              user_address,
-              user_city,
-              user_post_code,
               user_status: 0
             }
             const transporter = nodemailer.createTransport({
               service: 'gmail',
               port: 587,
-              secure: false, // true for 465, false for other ports
+              secure: false,
               auth: {
                 user: process.env.EMAIL, // generated ethereal user
                 pass: process.env.PASS // generated ethereal password
               }
             })
-            const info = await transporter.sendMail({
-              from: '"Sky Router Confirmation Email" <skyrouterweb6@gmail.com>', // sender address
-              to: user_email, // list of receivers
-              subject: 'Confirmation Email', // Subject line
-              html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${randomToken}</a>` // html body
+            const mailOPtion = {
+              from: `"Sky Router "${process.env.EMAIL}`,
+              to: `${user_email}`,
+              subject: 'Confirmation Email',
+              html: `<h2>Welcome at SkyRouter before you searching Ticket Please Activation  Your Account First on this Button</h2>
+                  <p>Click This Link For Activation your account</p>
+                  <a href ="http://localhost:8081/confirmEmail/${randomToken}">Activation Email</a>`
+            }
+            transporter.sendMail(mailOPtion, (err, result) => {
+              if (err) {
+                return helper.response(res, 400, 'Error Send Email', err)
+              } else {
+                return helper.response(res, 200, 'Success Send Email', result)
+              }
             })
-            console.log(info)
             const result = await registerUserModel(setData)
             return helper.response(res, 200, 'Success Register Data', result)
           }
@@ -76,6 +71,7 @@ module.exports = {
         }
       }
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Something error', error)
     }
   },
@@ -125,7 +121,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      return helper.response(res, 400, "Can't Login", error)
+      return helper.response(res, 400, 'Your Email Not Registered', error)
     }
   },
   verifyUser: async (req, res) => {
@@ -225,20 +221,28 @@ module.exports = {
             ...{ user_code: randomToken }
           }
           const transporter = nodemailer.createTransport({
-            host: 'smtp.google.com',
             service: 'gmail',
             port: 587,
-            secure: false, // true for 465, false for other ports
+            secure: false,
             auth: {
-              user: 'skyrouterweb6@gmail.com', // generated ethereal user
-              pass: 'skyrouter6' // generated ethereal password
+              user: process.env.EMAIL, // generated ethereal user
+              pass: process.env.PASS // generated ethereal password
             }
           })
-          await transporter.sendMail({
-            from: '"Sky Router Reset Password" <skyrouterweb6@gmail.com>', // sender address
-            to: user_email, // list of receivers
-            subject: 'Confirmation Email', // Subject line
-            html: `Click Here To Change Your Password <a>http://localhost:3000/user/forgetpassword/${randomToken}</a>` // html body
+          const mailOPtion = {
+            from: `"Sky Router "${process.env.EMAIL}`,
+            to: `${user_email}`,
+            subject: 'Forgot Password',
+            html: `
+                  <p>Click This Link For re-new your password</p>
+                  <a href ="http://localhost:8081/forgot/${randomToken}">Re-New Your password</a>`
+          }
+          transporter.sendMail(mailOPtion, (err, result) => {
+            if (err) {
+              return helper.response(res, 400, 'Error Send Email', err)
+            } else {
+              return helper.response(res, 200, 'Success Send Email', result)
+            }
           })
           await patchUserModel(setData, cekEmail[0].user_id)
           return helper.response(
@@ -276,7 +280,7 @@ module.exports = {
             const encryptPassword = bcrypt.hashSync(user_password, salt)
             const setData = {
               ...cekCodes[0],
-              ...{ user_password: encryptPassword }
+              ...{ user_password: encryptPassword, user_code: '' }
             }
             const resetPassword = await patchUserModel(
               setData,
