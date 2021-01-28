@@ -23,39 +23,39 @@ module.exports = {
       } = req.body
       page = parseInt(page)
       limit = parseInt(limit)
-      //   const totalData = await dataCount(
-      //     takeoff,
-      //     landing,
-      //     inflightMeal,
-      //     wifi,
-      //     luggage,
-      //     direct,
-      //     transit,
-      //     airlanes,
-      //     departureStart,
-      //     departureEnd,
-      //     arrivedStart,
-      //     arrivedEnd
-      //   )
-      //   const totalPage = Math.ceil(totalData / limit)
+      const totalData = await dataCount(
+        takeoff,
+        landing,
+        inflightMeal,
+        wifi,
+        luggage,
+        direct,
+        transit,
+        airlanes,
+        departureStart,
+        departureEnd,
+        arrivedStart,
+        arrivedEnd
+      )
+      const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
-      //   const prevLink =
-      //     page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
-      //   const nextLink =
-      //     page < totalPage
-      //       ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
-      //       : null
-      //   const pageInfo = {
-      //     page,
-      //     totalPage,
-      //     limit,
-      //     totalData,
-      //     nextLink:
-      //       nextLink &&
-      //       `http://localhost:${process.env.PORT}/product?${nextLink}`,
-      //     prevLink:
-      //       prevLink && `http://localhost:${process.env.PORT}/product?${prevLink}`
-      //   }
+      const prevLink =
+        page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
+      const nextLink =
+        page < totalPage
+          ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
+          : null
+      const pageInfo = {
+        page,
+        totalPage,
+        limit,
+        totalData,
+        nextLink:
+          nextLink &&
+          `http://localhost:${process.env.PORT}/product?${nextLink}`,
+        prevLink:
+          prevLink && `http://localhost:${process.env.PORT}/product?${prevLink}`
+      }
 
       const result = await get(
         offset,
@@ -73,9 +73,7 @@ module.exports = {
         arrivedStart,
         arrivedEnd
       )
-      console.log(limit)
-      console.log(page)
-      return response(res, 200, 'success get data', result)
+      return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
