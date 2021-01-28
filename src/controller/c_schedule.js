@@ -72,7 +72,8 @@ module.exports = {
         departureStart,
         departureEnd,
         arrivedStart,
-        arrivedEnd
+        arrivedEnd,
+        sort
       )
       console.log(sort)
       return response(res, 200, 'success get data', result, pageInfo)

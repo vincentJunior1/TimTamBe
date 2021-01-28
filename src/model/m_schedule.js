@@ -32,9 +32,9 @@ module.exports = {
       arrivedStart !== ''
         ? `and landingTime between '${arrivedStart}' and '${arrivedEnd}'`
         : ''
-    const order = sort !== undefined ? ` order by ${sort} DESC` : ''
+    const order = sort !== '' ? ` order by ${sort} DESC` : ''
     return actionQuery(
-      `select * from schedule ${order} where takeOff = '${takeoff}' and landing = '${landing}' ${meal}${wi}${lug}${dir}${trans}${air}${departure}${arrived} LIMIT ${limit} OFFSET ${offset}`
+      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' ${meal}${wi}${lug}${dir}${trans}${air}${departure}${arrived} ${order} LIMIT ${limit} OFFSET ${offset}`
     )
   },
   dataCount: (
