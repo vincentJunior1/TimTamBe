@@ -51,7 +51,6 @@ module.exports = {
               user_status: 0
             }
             const transporter = nodemailer.createTransport({
-              host: 'smtp.google.com',
               service: 'gmail',
               port: 587,
               secure: false, // true for 465, false for other ports
@@ -60,12 +59,13 @@ module.exports = {
                 pass: 'skyrouter6' // generated ethereal password
               }
             })
-            await transporter.sendMail({
+            const info = await transporter.sendMail({
               from: '"Sky Router Confirmation Email" <skyrouterweb6@gmail.com>', // sender address
               to: user_email, // list of receivers
               subject: 'Confirmation Email', // Subject line
               html: `Click Here To Verif Your Email <a>http://localhost:3000/user/verification/${randomToken}</a>` // html body
             })
+            console.log(info)
             const result = await registerUserModel(setData)
             return helper.response(res, 200, 'Success Register Data', result)
           }
@@ -304,7 +304,7 @@ module.exports = {
           const encryptPassword = bcrypt.hashSync(newPassword, salt)
           const newData = {
             ...cekEmail[0],
-            ...{ user_password: encryptPassword }
+            ...{ user_code: '', user_password: encryptPassword }
           }
           const result = await patchUserModel(newData, user_id)
           return helper.response(res, 200, 'Sucess Change Password', result)
