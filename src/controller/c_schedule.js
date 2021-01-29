@@ -20,7 +20,8 @@ module.exports = {
         departureEnd,
         arrivedStart,
         arrivedEnd,
-        sort
+        sort,
+        price
       } = req.body
       page = parseInt(page)
       limit = parseInt(limit)
@@ -36,7 +37,8 @@ module.exports = {
         departureStart,
         departureEnd,
         arrivedStart,
-        arrivedEnd
+        arrivedEnd,
+        price
       )
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
@@ -73,9 +75,9 @@ module.exports = {
         departureEnd,
         arrivedStart,
         arrivedEnd,
-        sort
+        sort,
+        price
       )
-      console.log(sort)
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
       console.log(error)

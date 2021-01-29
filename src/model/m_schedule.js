@@ -16,14 +16,28 @@ module.exports = {
     departureEnd,
     arrivedStart,
     arrivedEnd,
-    sort
+    sort,
+    price
   ) => {
+    const split = airlanes.split(',')
+    const first = split !== undefined ? split[0] : ''
+    let str = ''
+    for (let i = 0; i < split.length; i++) {
+      str += `OR airlanes= '${split[i]}' `
+    }
+    let air = ''
+    if (split.length !== 0) {
+      if (split.length === 1) {
+        air = `or airlanes= '${airlanes}' `
+      } else {
+        air = str
+      }
+    }
     const meal = inflightMeal === 1 ? ' and inflightMeal = 1' : ''
-    const wi = wifi === 1 ? ' and wifi = 1' : ''
-    const lug = luggage === 1 ? ' and luggage = 1' : ''
-    const dir = direct === 1 ? ' and direct = 1' : ''
+    const wi = wifi === '1' ? ' and wifi = 1' : ''
+    const lug = luggage === '1' ? ' and luggage = 1' : ''
+    const dir = direct === '1' ? ' and direct = 1' : ''
     const trans = transit !== '' ? ` and transit = '${transit}'` : ''
-    const air = airlanes !== undefined ? ` and airlanes = '${airlanes}'` : ''
     const departure =
       departureStart !== ''
         ? ` and takeOffTime between '${departureStart}' and '${departureEnd}'`
@@ -32,9 +46,10 @@ module.exports = {
       arrivedStart !== ''
         ? `and landingTime between '${arrivedStart}' and '${arrivedEnd}'`
         : ''
-    const order = sort !== '' ? ` order by ${sort} DESC` : ''
+    const order = sort !== undefined ? ` order by ${sort}` : ''
+    const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
     return actionQuery(
-      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' ${meal}${wi}${lug}${dir}${trans}${air}${departure}${arrived} ${order} LIMIT ${limit} OFFSET ${offset}`
+      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`
     )
   },
   dataCount: (
@@ -49,15 +64,29 @@ module.exports = {
     departureStart,
     departureEnd,
     arrivedStart,
-    arrivedEnd
+    arrivedEnd,
+    price
   ) => {
     return new Promise((resolve, reject) => {
-      const meal = inflightMeal === 1 ? 'and inflightMeal = 1' : ''
-      const wi = wifi === 1 ? ' and wifi = 1' : ''
-      const lug = luggage === 1 ? ' and luggage = 1' : ''
-      const dir = direct === 1 ? ' and direct = 1' : ''
+      const split = airlanes.split(',')
+      const first = split !== undefined ? split[0] : ''
+      let str = ''
+      for (let i = 0; i < split.length; i++) {
+        str += `OR airlanes= '${split[i]}' `
+      }
+      let air = ''
+      if (split.length !== 0) {
+        if (split.length === 1) {
+          air = `or airlanes= '${airlanes}' `
+        } else {
+          air = str
+        }
+      }
+      const meal = inflightMeal === '1' ? 'and inflightMeal = 1' : ''
+      const wi = wifi === '1' ? ' and wifi = 1' : ''
+      const lug = luggage === '1' ? ' and luggage = 1' : ''
+      const dir = direct === '1' ? ' and direct = 1' : ''
       const trans = transit !== '' ? ` and transit = '${transit}'` : ''
-      const air = airlanes !== undefined ? ` and airlanes = '${airlanes}'` : ''
       const departure =
         departureStart !== ''
           ? ` and takeOffTime between '${departureStart}' and '${departureEnd}'`
@@ -66,9 +95,9 @@ module.exports = {
         arrivedStart !== ''
           ? ` and landingTime between '${arrivedStart}' and '${arrivedEnd}'`
           : ''
-      // const order = sort != null ? ` order by '${sort}'` : ''
+      const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
       connection.query(
-        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' ${meal}${wi}${lug}${dir}${trans}${air}${departure}${arrived}`,
+        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing}`,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))
           // if (!error) {
