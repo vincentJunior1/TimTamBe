@@ -2,7 +2,9 @@ const helper = require('../helper/response')
 const {
   createRoomChatModel,
   cekRoomChatModel,
-  getAllRoomModel
+  getAllRoomModel,
+  getRoomByNumber,
+  sendMessageModel
 } = require('../model/m_chat')
 
 module.exports = {
@@ -44,6 +46,47 @@ module.exports = {
       }
     } catch (error) {
       return helper.response(res, 400, "Can't Get Any Room", error)
+    }
+  },
+  getRoomByRoomNumber: async (req, res) => {
+    try {
+      const { user_id } = req.decodeToken
+      const { id } = req.params
+      const result = await getRoomByNumber(id, user_id)
+      if (result.length > 0) {
+        return helper.response(res, 200, 'Sucess Get Room By Number ', result)
+      } else {
+        return helper.response(res, 404, 'Room Is Gone / Already Deleted')
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Something Wrong Please Try Again')
+    }
+  },
+  sendMessage: async (req, res) => {
+    try {
+      const { user_id } = req.decodeToken
+      const { id } = req.params
+      const { chat_content, user_id_to } = req.body
+      if (chat_content === '' || chat_content == null) {
+        return helper.response(res, 400, "Can't Send Empty chat ")
+      } else {
+        const message = {
+          room_chat: id,
+          user_id_from: user_id,
+          user_id_to,
+          chat_content
+        }
+        const result = await sendMessageModel(message)
+        return helper.response(res, 200, 'Sucess Send Message', result)
+      }
+    } catch (error) {
+      console.log(error)
+      return helper.response(
+        res,
+        400,
+        'Something Wrong Please Try Again',
+        error
+      )
     }
   }
 }
