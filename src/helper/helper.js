@@ -8,7 +8,7 @@ module.exports = {
           console.log(...argument)
           resolve(result)
         } else {
-          console.log(error)
+          console.log(...argument)
           reject(new Error(error))
         }
       })
