@@ -33,7 +33,7 @@ module.exports = {
         air = str
       }
     }
-    const meal = inflightMeal === 1 ? ' and inflightMeal = 1' : ''
+    const meal = inflightMeal === '1' ? ' and inflightMeal = 1' : ''
     const wi = wifi === '1' ? ' and wifi = 1' : ''
     const lug = luggage === '1' ? ' and luggage = 1' : ''
     const dir = direct === '1' ? ' and direct = 1' : ''
