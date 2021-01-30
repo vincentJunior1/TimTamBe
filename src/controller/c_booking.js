@@ -14,7 +14,9 @@ module.exports = {
   getBooking: async (req, res) => {
     try {
       const { id } = req.params
-      const result = await getBooking(id)
+      let { status } = req.query
+      status = parseInt(status)
+      const result = await getBooking(id, status)
       return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)

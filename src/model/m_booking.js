@@ -1,9 +1,9 @@
 const { actionQuery } = require('../helper/helper')
 module.exports = {
-  getBooking: (id) => {
+  getBooking: (id, status) => {
     return actionQuery(
-      'SELECT * from booking where status = 1 and userId = ?',
-      id
+      'SELECT * from booking where status = ? and userId = ?',
+      [status, id]
     )
   },
   getPassenger: (bookingId) => {
