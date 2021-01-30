@@ -33,7 +33,7 @@ module.exports = {
         air = str
       }
     }
-    const meal = inflightMeal === 1 ? ' and inflightMeal = 1' : ''
+    const meal = inflightMeal === '1' ? ' and inflightMeal = 1' : ''
     const wi = wifi === '1' ? ' and wifi = 1' : ''
     const lug = luggage === '1' ? ' and luggage = 1' : ''
     const dir = direct === '1' ? ' and direct = 1' : ''
@@ -46,7 +46,7 @@ module.exports = {
       arrivedStart !== ''
         ? `and landingTime between '${arrivedStart}' and '${arrivedEnd}'`
         : ''
-    const order = sort !== undefined ? ` order by ${sort}` : ''
+    const order = sort !== '' ? ` order by ${sort}` : ''
     const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
     return actionQuery(
       `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`

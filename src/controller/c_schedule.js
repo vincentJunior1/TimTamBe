@@ -22,7 +22,7 @@ module.exports = {
         arrivedEnd,
         sort,
         price
-      } = req.body
+      } = req.query
       page = parseInt(page)
       limit = parseInt(limit)
       const totalData = await dataCount(
@@ -78,6 +78,7 @@ module.exports = {
         sort,
         price
       )
+      console.log(req.query)
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
       console.log(error)
