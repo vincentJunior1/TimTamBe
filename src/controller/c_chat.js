@@ -4,7 +4,11 @@ const {
   cekRoomChatModel,
   getAllRoomModel,
   getRoomByNumber,
-  sendMessageModel
+  sendMessageModel,
+  updateRoomModel,
+  updateStatusRead,
+  countNotreadChat,
+  getLastChat
 } = require('../model/m_chat')
 
 module.exports = {
@@ -39,12 +43,21 @@ module.exports = {
     try {
       const { user_id } = req.decodeToken
       const result = await getAllRoomModel(user_id)
+      console.log(result.length)
       if (result.length > 0) {
+        for (let i = 0; i < result.length; i++) {
+          result[i].unreadmessage = await countNotreadChat(
+            result[i].room_chat,
+            result[i].user_id_from
+          )
+          result[i].lastChat = await getLastChat(result[i].room_chat)
+        }
         return helper.response(res, 200, 'Sucess Get All Room', result)
       } else {
         return helper.response(res, 404, 'You Not have any room')
       }
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, "Can't Get Any Room", error)
     }
   },
@@ -52,8 +65,9 @@ module.exports = {
     try {
       const { user_id } = req.decodeToken
       const { id } = req.params
-      const result = await getRoomByNumber(id, user_id)
+      const result = await getRoomByNumber(id)
       if (result.length > 0) {
+        await updateStatusRead(id, user_id)
         return helper.response(res, 200, 'Sucess Get Room By Number ', result)
       } else {
         return helper.response(res, 404, 'Room Is Gone / Already Deleted')
@@ -76,6 +90,10 @@ module.exports = {
           user_id_to,
           chat_content
         }
+        const setUpdate = {
+          room_updated_at: new Date()
+        }
+        await updateRoomModel(setUpdate, id)
         const result = await sendMessageModel(message)
         return helper.response(res, 200, 'Sucess Send Message', result)
       }
