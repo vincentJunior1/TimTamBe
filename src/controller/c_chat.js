@@ -43,7 +43,6 @@ module.exports = {
     try {
       const { user_id } = req.decodeToken
       const result = await getAllRoomModel(user_id)
-      console.log(result.length)
       if (result.length > 0) {
         for (let i = 0; i < result.length; i++) {
           result[i].unreadmessage = await countNotreadChat(
@@ -57,7 +56,6 @@ module.exports = {
         return helper.response(res, 404, 'You Not have any room')
       }
     } catch (error) {
-      console.log(error)
       return helper.response(res, 400, "Can't Get Any Room", error)
     }
   },
@@ -98,7 +96,6 @@ module.exports = {
         return helper.response(res, 200, 'Sucess Send Message', result)
       }
     } catch (error) {
-      console.log(error)
       return helper.response(
         res,
         400,
