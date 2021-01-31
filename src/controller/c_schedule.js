@@ -1,4 +1,4 @@
-const { get, dataCount } = require('../model/m_schedule')
+const { get, getById, dataCount } = require('../model/m_schedule')
 const { response } = require('../helper/response')
 const qs = require('querystring')
 
@@ -10,6 +10,7 @@ module.exports = {
         limit,
         takeoff,
         landing,
+        date,
         inflightMeal,
         wifi,
         luggage,
@@ -28,6 +29,7 @@ module.exports = {
       const totalData = await dataCount(
         takeoff,
         landing,
+        date,
         inflightMeal,
         wifi,
         luggage,
@@ -65,6 +67,7 @@ module.exports = {
         limit,
         takeoff,
         landing,
+        date,
         inflightMeal,
         wifi,
         luggage,
@@ -80,6 +83,16 @@ module.exports = {
       )
       console.log(req.query)
       return response(res, 200, 'success get data', result, pageInfo)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  getById: async (req, res) => {
+    try {
+      const { id } = req.params
+      const result = await getById(id)
+      return response(res, 200, 'success get data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

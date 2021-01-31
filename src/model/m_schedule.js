@@ -6,6 +6,7 @@ module.exports = {
     limit,
     takeoff,
     landing,
+    date,
     inflightMeal,
     wifi,
     luggage,
@@ -33,6 +34,7 @@ module.exports = {
         air = str
       }
     }
+    const byDate = date !== '' ? ` and date = '${date}'` : ''
     const meal = inflightMeal === '1' ? ' and inflightMeal = 1' : ''
     const wi = wifi === '1' ? ' and wifi = 1' : ''
     const lug = luggage === '1' ? ' and luggage = 1' : ''
@@ -49,12 +51,16 @@ module.exports = {
     const order = sort !== '' ? ` order by ${sort}` : ''
     const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
     return actionQuery(
-      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`
+      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`
     )
+  },
+  getById: (id) => {
+    return actionQuery('select * from schedule where scheduleId= ?', id)
   },
   dataCount: (
     takeoff,
     landing,
+    date,
     inflightMeal,
     wifi,
     luggage,
@@ -82,6 +88,7 @@ module.exports = {
           air = str
         }
       }
+      const byDate = date !== '' ? ` and date = '${date}'` : ''
       const meal = inflightMeal === '1' ? 'and inflightMeal = 1' : ''
       const wi = wifi === '1' ? ' and wifi = 1' : ''
       const lug = luggage === '1' ? ' and luggage = 1' : ''
@@ -97,7 +104,7 @@ module.exports = {
           : ''
       const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
       connection.query(
-        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing}`,
+        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing}`,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))
           // if (!error) {
