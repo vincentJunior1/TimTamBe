@@ -81,10 +81,8 @@ module.exports = {
         sort,
         price
       )
-      console.log(req.query)
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
-      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
@@ -94,7 +92,6 @@ module.exports = {
       const result = await getById(id)
       return response(res, 200, 'success get data', result)
     } catch (error) {
-      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },

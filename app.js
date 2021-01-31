@@ -32,7 +32,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('chatMessage', data)
   })
   socket.on('joinRoom', (data) => {
-    console.log('join Room')
     socket.join(data.room_chat)
   })
   socket.on('changeRoom', (data) => {

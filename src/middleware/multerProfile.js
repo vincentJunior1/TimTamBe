@@ -15,10 +15,8 @@ const maxSize = 2 * 1000 * 1000
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true)
-    // console.log('oke')
   } else {
     cb(new Error('File Must Jpeg or PNG'), false)
-    // console.log('gak oke')
   }
 }
 

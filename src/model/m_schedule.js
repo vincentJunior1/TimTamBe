@@ -110,12 +110,6 @@ module.exports = {
         `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing}`,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))
-          // if (!error) {
-          //   console.log(result[0])
-          //   resolve(result[0].total)
-          // } else {
-          //   reject(new Error(error))
-          // }
         }
       )
     })
