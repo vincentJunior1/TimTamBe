@@ -9,8 +9,7 @@ const {
   postNotif,
   postPassenger,
   deleteBooking,
-  deletePassenger,
-  getBookingById
+  deletePassenger
 } = require('../model/m_booking')
 const { response } = require('../helper/response')
 
@@ -69,21 +68,6 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  // bookingSuccess: async (req, res) => {
-  //   try {
-  //     const { userId } = req.params
-  //     const data = {
-  //       userId,
-  //       title: 'Congratulation',
-  //       text:
-  //         'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
-  //     }
-  //     const result = await postNotif(data)
-  //     return response(res, 200, 'success post data', result)
-  //   } catch (error) {
-  //     return response(res, 400, 'Bad request', error)
-  //   }
-  // },
   patchBooking: async (req, res) => {
     try {
       const { id } = req.params
