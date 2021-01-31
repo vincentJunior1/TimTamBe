@@ -5,11 +5,13 @@ const {
   postBooking,
   patchBooking,
   postPassenger,
-  deleteBooking
+  deleteBooking,
+  getBookingById
 } = require('../controller/c_booking')
 
 router.get('/mybooking/:id', getBooking)
 router.get('/passenger/:bookingId', getPassenger)
+router.get('/mybookingbyid/:id', getBookingById)
 router.post('/mybooking', postBooking)
 router.post('/passenger', postPassenger)
 router.patch('/:id', patchBooking)

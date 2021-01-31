@@ -6,6 +6,9 @@ module.exports = {
       [status, id]
     )
   },
+  getBookingByUserId: (id) => {
+    return actionQuery('SELECT * from booking where userId = ?', id)
+  },
   getBookingById: (id) => {
     return actionQuery('SELECT * from booking where bookingId= ?', id)
   },
