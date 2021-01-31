@@ -1,9 +1,11 @@
 const {
   getBooking,
+  getBookingById,
   getPassenger,
   getBookingId,
   postBooking,
   patchBooking,
+  postNotif,
   postPassenger,
   deleteBooking,
   deletePassenger
@@ -42,15 +44,46 @@ module.exports = {
         insurance,
         status
       }
+      const dataNotif = {
+        userId,
+        title: 'Tickets  Booked',
+        text:
+          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore'
+      }
+      await postNotif(dataNotif)
       const result = await postBooking(data)
       return response(res, 200, 'success post data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
   },
+  // bookingSuccess: async (req, res) => {
+  //   try {
+  //     const { userId } = req.params
+  //     const data = {
+  //       userId,
+  //       title: 'Congratulation',
+  //       text:
+  //         'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
+  //     }
+  //     const result = await postNotif(data)
+  //     return response(res, 200, 'success post data', result)
+  //   } catch (error) {
+  //     return response(res, 400, 'Bad request', error)
+  //   }
+  // },
   patchBooking: async (req, res) => {
     try {
       const { id } = req.params
+      const key = await getBookingById(id)
+      const userId = key[0].userId
+      const data = {
+        userId,
+        title: 'Congratulation',
+        text:
+          'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
+      }
+      await postNotif(data)
       const result = await patchBooking(id)
       return response(res, 200, 'success update status ', result)
     } catch (error) {

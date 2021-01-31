@@ -6,6 +6,9 @@ module.exports = {
       [status, id]
     )
   },
+  getBookingById: (id) => {
+    return actionQuery('SELECT * from booking where bookingId= ?', id)
+  },
   getPassenger: (bookingId) => {
     return actionQuery('SELECT * from passenger where bookingId = ?', bookingId)
   },
@@ -22,6 +25,9 @@ module.exports = {
   },
   postPassenger: (data) => {
     return actionQuery('insert into passenger set ?', data)
+  },
+  postNotif: (data) => {
+    return actionQuery('insert into notification set ?', data)
   },
   deleteBooking: (id) => {
     return actionQuery('delete from booking where bookingId= ?', id)
