@@ -6,7 +6,8 @@ const {
   patchBooking,
   postPassenger,
   deleteBooking,
-  deletePassenger
+  deletePassenger,
+  getBookingById
 } = require('../model/m_booking')
 const { response } = require('../helper/response')
 
@@ -17,6 +18,16 @@ module.exports = {
       let { status } = req.query
       status = parseInt(status)
       const result = await getBooking(id, status)
+      return response(res, 200, 'success get data', result)
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  getBookingById: async (req, res) => {
+    try {
+      const { id } = req.params
+
+      const result = await getBookingById(id)
       return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
