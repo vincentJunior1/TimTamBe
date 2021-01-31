@@ -57,6 +57,9 @@ module.exports = {
   getById: (id) => {
     return actionQuery('select * from schedule where scheduleId= ?', id)
   },
+  post: (data) => {
+    return actionQuery('insert into schedule set ?', data)
+  },
   dataCount: (
     takeoff,
     landing,

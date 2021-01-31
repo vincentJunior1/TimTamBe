@@ -1,4 +1,4 @@
-const { get, getById, dataCount } = require('../model/m_schedule')
+const { get, getById, post, dataCount } = require('../model/m_schedule')
 const { response } = require('../helper/response')
 const qs = require('querystring')
 
@@ -95,6 +95,55 @@ module.exports = {
       return response(res, 200, 'success get data', result)
     } catch (error) {
       console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  post: async (req, res) => {
+    try {
+      const {
+        airlanes,
+        date,
+        takeOff,
+        takeOffAirport,
+        takeOffTime,
+        landing,
+        landingAirport,
+        landingTime,
+        Duration,
+        luggage,
+        inflightMeal,
+        wifi,
+        direct,
+        transit,
+        airplanesClass,
+        refun,
+        reschedule,
+        price
+      } = req.body
+
+      const data = {
+        airlanes,
+        date,
+        takeOff,
+        takeOffAirport,
+        takeOffTime,
+        landing,
+        landingAirport,
+        landingTime,
+        Duration,
+        luggage,
+        inflightMeal,
+        wifi,
+        direct,
+        transit,
+        airplanesClass,
+        refun,
+        reschedule,
+        price
+      }
+      const result = await post(data)
+      return response(res, 200, 'success post data', result)
+    } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
   }
