@@ -35,12 +35,18 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', (data) => {
     socket.join(data.room_chat)
   })
+  socket.on('leaveRoom', (data) => {
+    socket.leave(data)
+  })
   socket.on('changeRoom', (data) => {
     socket.leave(data.oldRoom)
     socket.join(data.room_chat)
   })
   socket.on('roomMessage', (data) => {
     io.to(data.room_chat).emit('chatMessage', data)
+  })
+  socket.on('typing', (data) => {
+    socket.broadcast.to(data.room_chat).emit('typingMessage', data)
   })
 })
 app.use((req, res, next) => {
