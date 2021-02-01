@@ -22,7 +22,7 @@ const io = socket(server, {
 })
 io.on('connection', (socket) => {
   console.log('Socket.Io Connect')
-  socket.on('globalMessage', (data) => {  
+  socket.on('globalMessage', (data) => {
     io.emit('chatMessage', data)
   })
   socket.on('privateMessage', (data) => {
@@ -31,17 +31,17 @@ io.on('connection', (socket) => {
   socket.on('broadcastMessage', (data) => {
     socket.broadcast.emit('chatMessage', data)
   })
-  socket.on('joinRoom', (data) => {   
+  socket.on('joinRoom', (data) => {
     socket.join(data.room_chat)
   })
- socket.on('leaveRoom', (data) => { 
+  socket.on('leaveRoom', (data) => {
     socket.leave(data)
   })
   socket.on('changeRoom', (data) => {
     socket.leave(data.oldRoom)
     socket.join(data.room_chat)
   })
-  socket.on('roomMessage', (data) => {  
+  socket.on('roomMessage', (data) => {
     io.to(data.room_chat).emit('chatMessage', data)
   })
   socket.on('typing', (data) => {
