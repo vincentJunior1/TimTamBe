@@ -28,7 +28,7 @@ module.exports = {
     return actionQuery('insert into booking set ?', data)
   },
   patchBooking: (id) => {
-    return actionQuery('update booking set status = 1 where bookingId= ? ', id)
+    return actionQuery('update booking set status = 1 where orderId= ? ', id)
   },
   postPassenger: (data) => {
     return actionQuery('insert into passenger set ?', data)
