@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 31, 2021 at 03:30 PM
+-- Generation Time: Feb 01, 2021 at 11:43 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -21,6 +21,35 @@ SET time_zone = "+00:00";
 --
 -- Database: `sky_router`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking`
+--
+
+CREATE TABLE `booking` (
+  `bookingId` int(11) NOT NULL,
+  `orderId` varchar(32) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `scheduleId` int(11) NOT NULL,
+  `total` int(32) NOT NULL,
+  `insurance` int(11) NOT NULL,
+  `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `booking`
+--
+
+INSERT INTO `booking` (`bookingId`, `orderId`, `userId`, `scheduleId`, `total`, `insurance`, `status`) VALUES
+(1, '', 1, 1, 1, 1, 1),
+(2, '', 2, 2, 20, 1, 1),
+(3, '20210129T111254655', 2, 2, 20, 1, 1),
+(5, '20210201095752679', 1, 2, 2000000, 1, 0),
+(6, '20210201100617069', 1, 2, 2000000, 1, 0),
+(7, '20210201100644782', 1, 2, 2000000, 1, 0),
+(8, '20210201102907503', 1, 2, 2000000, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -45,6 +74,32 @@ CREATE TABLE `chat` (
 
 INSERT INTO `chat` (`chat_id`, `user_id_from`, `user_id_to`, `room_chat`, `chat_content`, `status_read`, `chat_created_at`, `chat_updated_at`) VALUES
 (1, 3, 7, 7005, 'Hallo Apa Kabar', 'Unread', '2021-01-29 13:45:34', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE `notification` (
+  `notificationId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `title` varchar(20) NOT NULL,
+  `text` varchar(100) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `notification`
+--
+
+INSERT INTO `notification` (`notificationId`, `userId`, `title`, `text`, `createdAt`) VALUES
+(1, 1, 'Tickets  Booked', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, to', '2021-01-31 04:53:05'),
+(2, 1, 'Congratulation', 'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem', '2021-01-31 04:53:35'),
+(3, 1, 'Tickets  Booked', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, to', '2021-02-01 09:57:53'),
+(4, 1, 'Tickets  Booked', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, to', '2021-02-01 10:06:17'),
+(5, 1, 'Tickets  Booked', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, to', '2021-02-01 10:06:45'),
+(6, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/ce400f6d-e296-4ac7-b', '2021-02-01 10:29:08');
 
 -- --------------------------------------------------------
 
@@ -175,10 +230,22 @@ INSERT INTO `user` (`user_id`, `user_code`, `user_name`, `user_email`, `user_pas
 --
 
 --
+-- Indexes for table `booking`
+--
+ALTER TABLE `booking`
+  ADD PRIMARY KEY (`bookingId`);
+
+--
 -- Indexes for table `chat`
 --
 ALTER TABLE `chat`
   ADD PRIMARY KEY (`chat_id`);
+
+--
+-- Indexes for table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`notificationId`);
 
 --
 -- Indexes for table `passenger`
@@ -209,10 +276,22 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `booking`
+--
+ALTER TABLE `booking`
+  MODIFY `bookingId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `chat`
 --
 ALTER TABLE `chat`
   MODIFY `chat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `passenger`
