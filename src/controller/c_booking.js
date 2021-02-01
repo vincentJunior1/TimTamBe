@@ -1,6 +1,5 @@
 const {
   getBooking,
-  getBookingById,
   getBookingByUserId,
   getPassenger,
   getBookingId,
@@ -9,8 +8,10 @@ const {
   postNotif,
   postPassenger,
   deleteBooking,
-  deletePassenger
+  deletePassenger,
+  paymentGatewayModel
 } = require('../model/m_booking')
+const midtransClient = require('midtrans-client')
 const { response } = require('../helper/response')
 
 module.exports = {
@@ -55,33 +56,76 @@ module.exports = {
         insurance,
         status
       }
+      const payment = await paymentGatewayModel(data.orderId, total)
       const dataNotif = {
         userId,
         title: 'Tickets  Booked',
-        text:
-          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore'
+        text: `Finish Your Payment in this link ${payment}`
       }
       await postNotif(dataNotif)
-      const result = await postBooking(data)
-      return response(res, 200, 'success post data', result)
+      await postBooking(data)
+      return response(res, 200, 'success post data', payment)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
   },
   patchBooking: async (req, res) => {
     try {
-      const { id } = req.params
-      const key = await getBookingById(id)
-      const userId = key[0].userId
-      const data = {
-        userId,
-        title: 'Congratulation',
-        text:
-          'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
-      }
-      await postNotif(data)
-      const result = await patchBooking(id)
-      return response(res, 200, 'success update status ', result)
+      const { user_id } = req.decodeToken
+      const snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: 'SB-Mid-server-i5Ea0d6uzEBfXIa1yGPrviwO',
+        clientKey: 'SB-Mid-client-SGuknvb1p9N631nP'
+      })
+
+      snap.transaction.notification(req.body).then(async (statusResponse) => {
+        const orderId = statusResponse.order_id
+        const transactionStatus = statusResponse.transaction_status
+        const fraudStatus = statusResponse.fraud_status
+        if (transactionStatus === 'capture') {
+          if (fraudStatus === 'challenge') {
+            const data = {
+              user_id,
+              title: 'Congratulation',
+              text:
+                'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
+            }
+            await postNotif(data)
+            const result = await patchBooking(orderId)
+            return response(res, 200, 'success update status ', result)
+          } else if (fraudStatus === 'accept') {
+            const data = {
+              user_id,
+              title: 'Congratulation',
+              text:
+                'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
+            }
+            await postNotif(data)
+            const result = await patchBooking(orderId)
+            return response(res, 200, 'success update status ', result)
+          }
+        } else if (transactionStatus === 'settlement') {
+          const data = {
+            user_id,
+            title: 'Congratulation',
+            text:
+              'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
+          }
+          await postNotif(data)
+          const result = await patchBooking(orderId)
+          return response(res, 200, 'success update status ', result)
+        } else if (transactionStatus === 'deny') {
+          // TODO you can ignore 'deny', because most of the time it allows payment retries
+          // and later can become success
+        } else if (
+          transactionStatus === 'cancel' ||
+          transactionStatus === 'expire'
+        ) {
+          return response(res, 400, 'Failed To Pay')
+        } else if (transactionStatus === 'pending') {
+          return response(res, 402, 'Waiting for payment')
+        }
+      })
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
