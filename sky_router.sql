@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 31, 2021 at 11:39 AM
+-- Generation Time: Jan 31, 2021 at 03:30 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -34,6 +34,7 @@ CREATE TABLE `chat` (
   `user_id_to` int(11) NOT NULL,
   `room_chat` int(11) NOT NULL,
   `chat_content` text NOT NULL,
+  `status_read` enum('Read','Unread') NOT NULL DEFAULT 'Unread',
   `chat_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `chat_updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -42,8 +43,8 @@ CREATE TABLE `chat` (
 -- Dumping data for table `chat`
 --
 
-INSERT INTO `chat` (`chat_id`, `user_id_from`, `user_id_to`, `room_chat`, `chat_content`, `chat_created_at`, `chat_updated_at`) VALUES
-(1, 3, 7, 7005, 'Hallo Apa Kabar', '2021-01-29 13:45:34', '0000-00-00 00:00:00');
+INSERT INTO `chat` (`chat_id`, `user_id_from`, `user_id_to`, `room_chat`, `chat_content`, `status_read`, `chat_created_at`, `chat_updated_at`) VALUES
+(1, 3, 7, 7005, 'Hallo Apa Kabar', 'Unread', '2021-01-29 13:45:34', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 

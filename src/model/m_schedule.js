@@ -12,6 +12,7 @@ module.exports = {
     luggage,
     direct,
     transit,
+    airplanesClass,
     airlanes,
     departureStart,
     departureEnd,
@@ -40,6 +41,8 @@ module.exports = {
     const lug = luggage === '1' ? ' and luggage = 1' : ''
     const dir = direct === '1' ? ' and direct = 1' : ''
     const trans = transit !== '' ? ` and transit = '${transit}'` : ''
+    const airclass =
+      airplanesClass !== '' ? ` and airplanesClass = '${airplanesClass}'` : ''
     const departure =
       departureStart !== ''
         ? ` and takeOffTime between '${departureStart}' and '${departureEnd}'`
@@ -51,7 +54,7 @@ module.exports = {
     const order = sort !== '' ? ` order by ${sort}` : ''
     const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
     return actionQuery(
-      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`
+      `select * from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${airclass}${departure}${arrived}${pricing} ${order} LIMIT ${limit} OFFSET ${offset}`
     )
   },
   getById: (id) => {
@@ -69,6 +72,7 @@ module.exports = {
     luggage,
     direct,
     transit,
+    airplanesClass,
     airlanes,
     departureStart,
     departureEnd,
@@ -97,6 +101,8 @@ module.exports = {
       const lug = luggage === '1' ? ' and luggage = 1' : ''
       const dir = direct === '1' ? ' and direct = 1' : ''
       const trans = transit !== '' ? ` and transit = '${transit}'` : ''
+      const airclass =
+        airplanesClass !== '' ? ` and airplanesClass = '${airplanesClass}'` : ''
       const departure =
         departureStart !== ''
           ? ` and takeOffTime between '${departureStart}' and '${departureEnd}'`
@@ -107,15 +113,9 @@ module.exports = {
           : ''
       const pricing = price !== '' ? ` and price between 0 and ${price}` : ''
       connection.query(
-        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${departure}${arrived}${pricing}`,
+        `select count(*) as total from schedule where takeOff = '${takeoff}' and landing = '${landing}' and (airlanes LIKE '%${first}%' ${air}) ${byDate}${meal}${wi}${lug}${dir}${trans}${airclass}${departure}${arrived}${pricing}`,
         (error, result) => {
           !error ? resolve(result[0].total) : reject(new Error(error))
-          // if (!error) {
-          //   console.log(result[0])
-          //   resolve(result[0].total)
-          // } else {
-          //   reject(new Error(error))
-          // }
         }
       )
     })

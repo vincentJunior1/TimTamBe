@@ -71,7 +71,6 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log(error)
       return helper.response(res, 400, 'Something error', error)
     }
   },
@@ -207,7 +206,6 @@ module.exports = {
         return helper.response(res, 400, 'Something Wrong Please Try Again')
       }
     } catch (error) {
-      console.log(error)
       return helper.response(res, 400, "Can't Update profile", error)
     }
   },
@@ -327,7 +325,6 @@ module.exports = {
         return helper.response(res, 400, 'Old Password is wrong')
       }
     } catch (error) {
-      console.log(error)
       return helper.response(
         res,
         400,
