@@ -1,4 +1,5 @@
 const { actionQuery } = require('../helper/helper')
+const midTransClient = require('midtrans-client')
 module.exports = {
   getBooking: (id, status) => {
     return actionQuery(
@@ -40,5 +41,33 @@ module.exports = {
   },
   deletePassenger: (bookingId) => {
     return actionQuery('delete from passenger where bookingId= ?', bookingId)
+  },
+  paymentGatewayModel: (bookingId, total) => {
+    return new Promise((resolve, reject) => {
+      const snap = new midTransClient.Snap({
+        isProduction: false,
+        serverKey: 'SB-Mid-server-i5Ea0d6uzEBfXIa1yGPrviwO',
+        clientKey: 'SB-Mid-client-SGuknvb1p9N631nP'
+      })
+      const parameter = {
+        transaction_details: {
+          order_id: bookingId,
+          gross_amount: total
+        },
+        credit_card: {
+          secure: true
+        }
+      }
+      snap
+        .createTransaction(parameter)
+        .then((transaction) => {
+          // transaction redirect_url
+          const redirectUrl = transaction.redirect_url
+          resolve(redirectUrl)
+        })
+        .catch((error) => {
+          reject(new Error(error))
+        })
+    })
   }
 }
