@@ -7,7 +7,6 @@ module.exports = {
         if (!error) {
           resolve(result)
         } else {
-          console.log(...argument)
           reject(new Error(error))
         }
       })
