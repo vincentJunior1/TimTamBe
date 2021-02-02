@@ -30,6 +30,9 @@ module.exports = {
   patchBooking: (id) => {
     return actionQuery('update booking set status = 1 where orderId= ? ', id)
   },
+  getUserId: (id) => {
+    return actionQuery('SELECT * FROM booking WHERE orderId = ?', id)
+  },
   postPassenger: (data) => {
     return actionQuery('insert into passenger set ?', data)
   },
