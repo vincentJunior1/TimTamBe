@@ -78,7 +78,6 @@ module.exports = {
         clientKey: 'SB-Mid-client-SGuknvb1p9N631nP'
       })
       snap.transaction.notification(req.body).then(async (statusResponse) => {
-        console.log(statusResponse.order_id)
         const results = await getUserId(statusResponse.order_id)
         const orderId = statusResponse.order_id
         const transactionStatus = statusResponse.transaction_status
@@ -118,7 +117,6 @@ module.exports = {
         } else if (transactionStatus === 'deny') {
           // TODO you can ignore 'deny', because most of the time it allows payment retries
           // and later can become success
-          console.log('oke')
         } else if (
           transactionStatus === 'cancel' ||
           transactionStatus === 'expire'
@@ -129,7 +127,6 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
