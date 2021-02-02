@@ -9,7 +9,8 @@ const {
   postPassenger,
   deleteBooking,
   deletePassenger,
-  paymentGatewayModel
+  paymentGatewayModel,
+  getUserId
 } = require('../model/m_booking')
 const midtransClient = require('midtrans-client')
 const { response } = require('../helper/response')
@@ -71,20 +72,20 @@ module.exports = {
   },
   patchBooking: async (req, res) => {
     try {
-      const { user_id } = req.decodeToken
       const snap = new midtransClient.Snap({
         isProduction: false,
         serverKey: 'SB-Mid-server-i5Ea0d6uzEBfXIa1yGPrviwO',
         clientKey: 'SB-Mid-client-SGuknvb1p9N631nP'
       })
       snap.transaction.notification(req.body).then(async (statusResponse) => {
+        const results = await getUserId(statusResponse.order_id)
         const orderId = statusResponse.order_id
         const transactionStatus = statusResponse.transaction_status
         const fraudStatus = statusResponse.fraud_status
         if (transactionStatus === 'capture') {
           if (fraudStatus === 'challenge') {
             const data = {
-              userId: user_id,
+              userId: results[0].userId,
               title: 'Congratulation',
               text:
                 'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
@@ -94,7 +95,7 @@ module.exports = {
             return response(res, 200, 'success update status ', result)
           } else if (fraudStatus === 'accept') {
             const data = {
-              userId: user_id,
+              userId: results[0].userId,
               title: 'Congratulation',
               text:
                 'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
@@ -105,7 +106,7 @@ module.exports = {
           }
         } else if (transactionStatus === 'settlement') {
           const data = {
-            userId: user_id,
+            userId: results[0].userId,
             title: 'Congratulation',
             text:
               'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem'
@@ -116,7 +117,6 @@ module.exports = {
         } else if (transactionStatus === 'deny') {
           // TODO you can ignore 'deny', because most of the time it allows payment retries
           // and later can become success
-          console.log('oke')
         } else if (
           transactionStatus === 'cancel' ||
           transactionStatus === 'expire'
@@ -127,7 +127,6 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },

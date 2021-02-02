@@ -8,6 +8,7 @@ const routesNavigation = require('./src/routesNavigation')
 const dotenv = require('dotenv')
 dotenv.config()
 
+app.use(express.static('uploads'))
 app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyParser.json())

@@ -86,6 +86,7 @@ module.exports = {
       )
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
