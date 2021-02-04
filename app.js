@@ -14,7 +14,7 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: 'false' }))
 app.use(express.static('uploads'))
-const http = require('http')
+const http = require('https')
 const server = http.createServer(app)
 const io = socket(server, {
   cors: {
