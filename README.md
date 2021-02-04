@@ -13,7 +13,7 @@
 
 ## About The Project
 
-Sky Router is a website that ....
+Sky Router is a web based application. This application helps people to get airplane's ticket easily through searching and sorting feature. It will filter the ticket based on what the users want. Sky Router provides other best features for its users. There are updating profile, chatting, and online payment. Sky Router also implements many technologies for secure the users data.
 
 ## Built With
 
