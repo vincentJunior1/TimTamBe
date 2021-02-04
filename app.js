@@ -18,7 +18,7 @@ const http = require('http')
 const server = http.createServer(app)
 const io = socket(server, {
   cors: {
-    origin: '/api1'
+    origin: '*'
   }
 })
 io.on('connection', (socket) => {
