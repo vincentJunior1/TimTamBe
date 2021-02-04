@@ -31,7 +31,7 @@ module.exports = {
     return actionQuery('update booking set status = 1 where orderId= ? ', id)
   },
   patchUseBooking: (id) => {
-    return actionQuery('update booking set flight = 1 where userId= ? ', id)
+    return actionQuery('update booking set flight = 1 where bookingId= ? ', id)
   },
   getUserId: (id) => {
     return actionQuery('SELECT * FROM booking WHERE orderId = ?', id)
