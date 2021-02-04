@@ -16,7 +16,7 @@ router.get('/passenger/:bookingId', getPassenger)
 router.get('/mybookingbyid/:id', getBookingById)
 router.post('/mybooking', authorization, postBooking)
 router.post('/passenger', authorization, postPassenger)
-router.post('/paymentfinish', patchBooking)
+router.patch('/paymentfinish', patchBooking)
 router.patch('/:id', patchUseBooking)
 router.delete('/:bookingId', deleteBooking)
 module.exports = router
