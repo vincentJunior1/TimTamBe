@@ -5,6 +5,7 @@ const {
   getBookingId,
   postBooking,
   patchBooking,
+  patchUseBooking,
   postNotif,
   postPassenger,
   deleteBooking,
@@ -126,6 +127,15 @@ module.exports = {
           return response(res, 402, 'Waiting for payment')
         }
       })
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  patchUseBooking: async (req, res) => {
+    try {
+      const { id } = req.params
+      const result = await patchUseBooking(id)
+      return response(res, 200, 'success use ticket', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }

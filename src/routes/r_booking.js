@@ -4,6 +4,7 @@ const {
   getPassenger,
   postBooking,
   patchBooking,
+  patchUseBooking,
   postPassenger,
   deleteBooking,
   getBookingById
@@ -16,5 +17,6 @@ router.get('/mybookingbyid/:id', getBookingById)
 router.post('/mybooking', postBooking)
 router.post('/passenger', postPassenger)
 router.post('/paymentfinish', patchBooking)
+router.patch('/:id', patchUseBooking)
 router.delete('/:bookingId', deleteBooking)
 module.exports = router
