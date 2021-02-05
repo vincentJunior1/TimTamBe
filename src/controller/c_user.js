@@ -37,6 +37,10 @@ module.exports = {
               user_email,
               user_password: encryptPassword,
               user_role,
+              user_phone: 0,
+              user_address: 'default',
+              user_city: 'default',
+              user_post_code: 0,
               user_status: 0
             }
             const transporter = nodemailer.createTransport({
