@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 05, 2021 at 10:35 AM
+-- Generation Time: Feb 05, 2021 at 11:15 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -48,7 +48,9 @@ INSERT INTO `booking` (`bookingId`, `orderId`, `userId`, `scheduleId`, `total`, 
 (2, '', 2, 2, 20, 1, 0, 1),
 (3, '20210129T111254655', 2, 2, 20, 1, 1, 0),
 (5, '20210130094122304', 3, 2, 200, 1, 0, 0),
-(7, '20210131045305854', 1, 2, 200, 1, 0, 1);
+(7, '20210131045305854', 1, 2, 200, 1, 0, 1),
+(8, '20210205101026096', 1, 2, 200, 1, 0, 0),
+(9, '20210205101311559', 1, 2, 200, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -84,7 +86,7 @@ CREATE TABLE `notification` (
   `notificationId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `title` varchar(20) NOT NULL,
-  `text` varchar(100) NOT NULL,
+  `text` text NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -105,7 +107,9 @@ INSERT INTO `notification` (`notificationId`, `userId`, `title`, `text`, `create
 (10, 3, 'Congratulation', 'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem', '2021-02-01 17:25:11'),
 (11, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/6078a216-4db9-48e6-b', '2021-02-01 17:54:08'),
 (12, 3, 'Congratulation', 'booking paid off, Sed ut perspiciatis unde omnis iste natus error sit voluptatem', '2021-02-01 17:55:46'),
-(13, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/a974fb37-d5ac-4684-9', '2021-02-01 18:01:07');
+(13, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/a974fb37-d5ac-4684-9', '2021-02-01 18:01:07'),
+(14, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/0c78838c-5a13-4cc4-a', '2021-02-05 10:10:26'),
+(15, 1, 'Tickets  Booked', 'Finish Your Payment in this link https://app.sandbox.midtrans.com/snap/v2/vtweb/a5ff3cb1-600b-49b8-a', '2021-02-05 10:13:12');
 
 -- --------------------------------------------------------
 
@@ -285,7 +289,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `bookingId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `bookingId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `chat`
@@ -297,7 +301,7 @@ ALTER TABLE `chat`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `passenger`
