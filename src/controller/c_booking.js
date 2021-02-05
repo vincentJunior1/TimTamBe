@@ -20,7 +20,7 @@ module.exports = {
   getBooking: async (req, res) => {
     try {
       const { id } = req.params
-      let result = await getBooking(id)
+      const result = await getBooking(id)
       for (let i = 0; i < result.length; i++) {
         result[i].passenger = await getPassenger(result[i].bookingId)
       }
