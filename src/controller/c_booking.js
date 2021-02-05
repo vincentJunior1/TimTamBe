@@ -70,6 +70,7 @@ module.exports = {
       await postBooking(data)
       return response(res, 200, 'success post data', payment)
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
