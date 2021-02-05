@@ -42,7 +42,8 @@ module.exports = {
               user_address: 'default',
               user_city: 'default',
               user_post_code: 0,
-              user_status: 0
+              user_status: 0,
+              user_updated_at: new Date()
             }
             const transporter = nodemailer.createTransport({
               service: 'gmail',
