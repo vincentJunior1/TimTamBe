@@ -20,11 +20,13 @@ module.exports = {
   getBooking: async (req, res) => {
     try {
       const { id } = req.params
-      let { status } = req.query
-      status = parseInt(status)
-      const result = await getBooking(id, status)
+      let result = await getBooking(id)
+      for (let i = 0; i < result.length; i++) {
+        result[i].passenger = await getPassenger(result[i].bookingId)
+      }
       return response(res, 200, 'success get data', result)
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
@@ -135,8 +137,10 @@ module.exports = {
     try {
       const { id } = req.params
       const result = await patchUseBooking(id)
+      console.log(req.params)
       return response(res, 200, 'success use ticket', result)
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },

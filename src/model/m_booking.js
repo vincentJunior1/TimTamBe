@@ -1,10 +1,13 @@
 const { actionQuery } = require('../helper/helper')
 const midTransClient = require('midtrans-client')
 module.exports = {
-  getBooking: (id, status) => {
+  getBooking: (id) => {
+    // where booking.status = ? and
+    // 'SELECT * FROM booking JOIN passenger ON booking.bookingId = passenger.bookingId JOIN schedule ON booking.scheduleId = schedule.scheduleId where booking.userId = ?',
     return actionQuery(
-      'SELECT * FROM booking JOIN passenger ON booking.bookingId = passenger.bookingId JOIN schedule ON booking.scheduleId = schedule.scheduleId where booking.status = ? and booking.userId = ?',
-      [status, id]
+      'SELECT * FROM booking JOIN schedule ON booking.scheduleId = schedule.scheduleId where booking.userId = ?',
+      id
+      // [status, id]
     )
   },
   getBookingByUserId: (id) => {
