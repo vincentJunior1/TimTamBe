@@ -58,7 +58,8 @@ module.exports = {
         scheduleId,
         total,
         insurance,
-        status
+        status,
+        flight: 0
       }
       const payment = await paymentGatewayModel(data.orderId, total)
       const dataNotif = {
