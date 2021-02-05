@@ -38,6 +38,7 @@ module.exports = {
               user_password: encryptPassword,
               user_role,
               user_phone: 0,
+              user_image: 'default',
               user_address: 'default',
               user_city: 'default',
               user_post_code: 0,
@@ -183,7 +184,7 @@ module.exports = {
           const result = await patchUserModel(newData, user_id)
           return helper.response(res, 200, 'Success Patch Data', result)
         } else {
-          if (cekEmail[0].user_image === '') {
+          if (cekEmail[0].user_image === 'default') {
             const newData = {
               ...cekEmail[0],
               ...setData,
