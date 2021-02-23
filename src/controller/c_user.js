@@ -60,7 +60,7 @@ module.exports = {
               subject: 'Confirmation Email',
               html: `<h2>Welcome at SkyRouter before you searching Ticket Please Activation  Your Account First on this Button</h2>
                   <p>Click This Link For Activation your account</p>
-                  <a href ="http://localhost:8080/confirmEmail/${randomToken}">Activation Email</a>`
+                  <a href ="https://skyrouter.netlify.app/confirmEmail/${randomToken}">Activation Email</a>`
             }
             transporter.sendMail(mailOPtion, (err, result) => {
               if (err) {
@@ -77,7 +77,6 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log(error)
       return helper.response(res, 400, 'Something error', error)
     }
   },
@@ -242,7 +241,7 @@ module.exports = {
             subject: 'Forgot Password',
             html: `
                   <p>Click This Link For re-new your password</p>
-                  <a href ="http://localhost:8080/forgot/${randomToken}">Re-New Your password</a>`
+                  <a href ="https://skyrouter.netlify.app/forgot/${randomToken}">Re-New Your password</a>`
           }
           transporter.sendMail(mailOPtion, (err, result) => {
             if (err) {
