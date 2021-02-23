@@ -8,12 +8,11 @@ const routesNavigation = require('./src/routesNavigation')
 const dotenv = require('dotenv')
 dotenv.config()
 
-app.use(express.static('uploads'))
 app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: 'false' }))
-app.use(express.static('uploads'))
+app.use('/api1',express.static('uploads'))
 const http = require('http')
 const server = http.createServer(app)
 const io = socket(server, {
